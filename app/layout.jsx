@@ -21,8 +21,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-main-bg flex items-center flex-col`}
       >
+        <div className="stars"></div>
+        <div className="twinkling"></div>
         {children}
       </body>
     </html>

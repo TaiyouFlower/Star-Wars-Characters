@@ -11,6 +11,13 @@ module.exports = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      backgroundImage: {
+        "main-bg":
+          "url(https://script-tutorials.com/demos/360/images/stars.png)",
+      },
+      fontFamily: {
+        jedi: ["Soloist"],
+      },
     },
   },
   plugins: [],
