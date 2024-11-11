@@ -37,7 +37,9 @@ export default function CharacterDetail() {
             response.vehicles.map((url) => fetch(url).then((res) => res.json()))
           );
           const starshipsData = await Promise.all(
-            response.starships.map((url) => fetch(url).then((res) => res.json()))
+            response.starships.map((url) =>
+              fetch(url).then((res) => res.json())
+            )
           );
 
           setFilms(filmsData);
@@ -83,8 +85,12 @@ export default function CharacterDetail() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <h1 className="text-4xl font-bold text-[#FFEE58] mb-4">Character Not Found</h1>
-        <p className="text-white mb-4">The character you're looking for does not exist.</p>
+        <h1 className="text-4xl font-bold text-[#FFEE58] mb-4">
+          Character Not Found
+        </h1>
+        <p className="text-white mb-4">
+          The character you are looking for does not exist.
+        </p>
         <button
           onClick={handleGoHome}
           className="bg-[#FFEE58] text-black rounded-md py-2 px-4"
