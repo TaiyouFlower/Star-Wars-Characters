@@ -1,41 +1,43 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useParams, useSearchParams } from "next/navigation";
 import { fetchFromSwapi } from "@/lib/api";
-import CharacterCard from "./components/CharacterCard";
-import CharacterModal from "./components/CharacterModal";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import CharacterCard from "@/app/components/CharacterCard";
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
+import CharacterModal from "@/app/components/CharacterModal";
 
-export default function Home() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page")) || 1;
-
+export default function SearchResultPage() {
+  const { result } = useParams();
   const [characters, setCharacters] = useState([]);
+  const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const currentPage = parseInt(searchParams.get("page")) || 1;
   const [totalPages, setTotalPages] = useState(1);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchCharacters = async () => {
+      setIsLoading(true);
       try {
-        const response = await fetchFromSwapi(`people/?page=${currentPage}`);
+        const response = await fetchFromSwapi(`people/?search=${result}`);
         const charactersWithIds = response.results.map((character) => {
           const id = character.url.match(/\/people\/(\d+)\//)[1];
           return { ...character, id };
         });
         setCharacters(charactersWithIds);
-        setTotalPages(Math.ceil(response.count / 10));
       } catch (error) {
         console.error("Error fetching characters:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchCharacters();
-  }, [currentPage]);
-
+    if (result) {
+      fetchCharacters();
+    }
+  }, [result]);
   const handleCharacterClick = (character) => {
     setSelectedCharacter(character);
     setIsModalOpen(true);

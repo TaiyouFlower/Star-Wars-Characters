@@ -21,7 +21,7 @@ export default function CharacterCard({ character, onClick }) {
 
   return (
     <div
-      onClick={onClick} 
+      onClick={onClick}
       className="bg-[#141414] text-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 w-full cursor-pointer"
     >
       {imageUrl ? (

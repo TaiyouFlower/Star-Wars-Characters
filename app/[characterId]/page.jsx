@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { fetchFromSwapi, getHomeworld } from "@/lib/api";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
@@ -10,18 +10,24 @@ import GeneralModal from "@/app/components/GeneralModal";
 
 export default function CharacterDetail() {
   const { characterId } = useParams();
+  const router = useRouter();
   const [character, setCharacter] = useState(null);
   const [homeworld, setHomeworld] = useState(null);
   const [films, setFilms] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [starships, setStarships] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null); 
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (characterId) {
       const fetchCharacter = async () => {
         try {
           const response = await fetchFromSwapi(`people/${characterId}`);
+          if (!response) {
+            setError(true);
+            return;
+          }
           setCharacter(response);
 
           const filmsData = await Promise.all(
@@ -31,9 +37,7 @@ export default function CharacterDetail() {
             response.vehicles.map((url) => fetch(url).then((res) => res.json()))
           );
           const starshipsData = await Promise.all(
-            response.starships.map((url) =>
-              fetch(url).then((res) => res.json())
-            )
+            response.starships.map((url) => fetch(url).then((res) => res.json()))
           );
 
           setFilms(filmsData);
@@ -41,6 +45,7 @@ export default function CharacterDetail() {
           setStarships(starshipsData);
         } catch (error) {
           console.error("Error fetching character details:", error);
+          setError(true);
         }
       };
 
@@ -71,17 +76,41 @@ export default function CharacterDetail() {
     setSelectedItem(null);
   };
 
-  if (!character) return <p>Loading...</p>;
+  const handleGoHome = () => {
+    router.push("/");
+  };
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <h1 className="text-4xl font-bold text-[#FFEE58] mb-4">Character Not Found</h1>
+        <p className="text-white mb-4">The character you're looking for does not exist.</p>
+        <button
+          onClick={handleGoHome}
+          className="bg-[#FFEE58] text-black rounded-md py-2 px-4"
+        >
+          Go Back Home
+        </button>
+      </div>
+    );
+  }
+
+  if (!character)
+    return (
+      <div className="flex items-center justify-center h-screen w-screen">
+        <span className="text-white">Loading...</span>
+      </div>
+    );
 
   return (
     <div className="flex flex-col items-center mt-8 mx-8">
       <Header />
       <div className="p-8">
-        <div className="flex flex-col">
+        <div className="character-container flex flex-col">
           <h1 className="text-4xl font-bold text-[#FFEE58] mb-2">
             {character.name}
           </h1>
-          <div className="flex items-center gap-16">
+          <div className="character-info flex items-center gap-16">
             <Image
               src={`https://starwars-visualguide.com/assets/img/characters/${characterId}.jpg`}
               alt={character.name}

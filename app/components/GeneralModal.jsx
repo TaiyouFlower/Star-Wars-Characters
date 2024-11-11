@@ -1,11 +1,28 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
-export default function GeneralModal({data, onClose }) {
-  if (!data) return null; 
+export default function GeneralModal({ data, onClose }) {
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
+
+  if (!data) return null;
 
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 mx-4">
-      <div className="bg-[#1A1A1A] p-8 rounded-lg max-w-lg w-full transition-all transform scale-95 opacity-0 animate-modal">
+      <div
+        ref={modalRef}
+        className="bg-[#1A1A1A] p-8 rounded-lg max-w-lg w-full transition-all transform scale-95 opacity-0 animate-modal"
+      >
         <div className="flex justify-between items-center mb-4">
           {data.name && (
             <h2 className="text-xl font-bold text-[#FFEE58]">{data.name}</h2>
