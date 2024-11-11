@@ -5,7 +5,7 @@ npm run dev
 
 notes & etc
 
--that's the the React framework I'm most comfortable with
+-I used Next.js because that's the the React framework I'm most comfortable with
 
 -Since the SWAPI didn't provide characters' images(or at least I couldn't find them in documentation)
 I used "Star Wars Visual Guide" to implement media. That's the website I got the basic design idea from as well.
